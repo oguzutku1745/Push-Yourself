@@ -21,20 +21,23 @@ contract Pushyourself {
     }
 
     IERC20 public immutable token;
+    TodoList[] public todos;
     uint public day = 0;
-    mapping(uint => TodoList[]) public Listsindexed;
+    mapping(uint => TodoList[]) public Listsindexed; //mapping to index tasks
 
 
     constructor (address _token) {
         token = IERC20(_token);
     }
 
+    // A modifier to make sure that person trying to toggle the task is the creator of the task
     modifier ShouldBeOwner (uint index) {
         TodoList memory todo = Listsindexed[day][index];
         require(todo.creator == msg.sender , "You are not the creator");
         _;
     }
 
+    // Function to create a task. Task name and the token amount will be determined by the creator.
     function create(string calldata _task, uint _amount) external {
         Listsindexed[day].push(TodoList({
             task: _task,
@@ -45,11 +48,13 @@ contract Pushyourself {
         emit addTodo(msg.sender, _task, _amount);
     }
 
+    // This will change the day
     function anotherDay() external {
         day += 1;
         emit newDay(day);
     }
 
+    // It is better to see our tasks in a string for bigger perspective
     function getInfo(uint _day) external view returns(string[] memory){
         string[] memory tasklist = new string[](Listsindexed[_day].length); // Set a limit to array and increase gas efficiency with holding it inside function
         for(uint256 i=0; i < Listsindexed[_day].length; i++){
@@ -59,7 +64,7 @@ contract Pushyourself {
     }
 
 
-
+    // Make sure that the creator is the owner and transfer the token amount determined by creator.
     function toggleAndGetToken (uint index) external payable ShouldBeOwner(index){
         TodoList storage todo = Listsindexed[day][index];    
         require(todo.completed == false, "You already achieved this task");
