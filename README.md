@@ -33,6 +33,8 @@ The contract has 5 functions:
 
 5- ***All Completed:*** The uint total is to hold values of completed tasks. It will behave as a score. Let's say we have 4 tasks and we completed 3 of them. The total variable will be 75 since we are dividing 100 by 4, then adding 25 three times. If the value of the total is not 100, the transaction of bonus tokens will revert.
 
+**Note:** IERC20.sol is also a customized contract which you can arrange everything from *customization* function.
+
 -----------------------------
 
 Built with :heartpulse: by [Me](https://medium.com/@kyatzu)
